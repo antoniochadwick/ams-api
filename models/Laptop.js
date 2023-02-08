@@ -23,15 +23,9 @@ const Laptop = new mongoose.Schema({
   },
   history: [
     {
-      user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-      },
-      assigned_from: {
-        type: Date,
-        default: Date.now,
-      },
-      assigned_to: Date,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Laptop",
+      required: true,
     },
   ],
   comments: [

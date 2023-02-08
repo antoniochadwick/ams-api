@@ -6,21 +6,18 @@ const History = new mongoose.Schema({
     ref: "Laptop",
     required: true,
   },
+  assigned_user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    // required: true,
+  },
+  author: {
+    type: String,
+    required: true,
+  },
   date_updated: {
     type: Date,
     default: Date.now,
-  },
-  property: {
-    type: String,
-    required: true,
-  },
-  old_value: {
-    type: String,
-    required: true,
-  },
-  new_value: {
-    type: String,
-    required: true,
   },
 });
 
