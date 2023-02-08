@@ -25,7 +25,7 @@ npm i
 3. define environment variables
 
 ```bash
-cp .env.example .env
+cp example.env .env
 vim .env
 ```
 
