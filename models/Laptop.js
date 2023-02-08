@@ -24,7 +24,7 @@ const Laptop = new mongoose.Schema({
   history: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Laptop",
+      ref: "History",
       required: true,
     },
   ],

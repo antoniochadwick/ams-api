@@ -8,8 +8,8 @@ import {
   getAllLaptops,
 } from "../controllers/laptopController.js";
 
-router.route("/laptop").post(addLaptop).get(getAllLaptops);
-router.route("/laptop/:id").patch(updateLaptop);
+router.route("/").post(addLaptop).get(getAllLaptops);
+router.route("/:id").patch(updateLaptop);
 router.route("/upload").post(uploadLaptops);
 
 export default router;

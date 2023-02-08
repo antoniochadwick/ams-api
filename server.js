@@ -11,7 +11,7 @@ import laptopRoutes from "./routes/laptopRoutes.js";
 import historyRoutes from "./routes/historyRoutes.js";
 
 //routes
-app.use("/", laptopRoutes);
+app.use("/laptop", laptopRoutes);
 app.use("/history", historyRoutes);
 
 app.use("/", (req, res) => {

@@ -100,7 +100,10 @@ const updateLaptop = async (req, res) => {
 
 const getAllLaptops = async (req, res) => {
   try {
-    const laptops = await Laptop.find();
+    const laptops = await Laptop.find().populate({
+      path: "history",
+      populate: { path: "laptop", select: "computerName" },
+    });
     if (laptops.length > 0) {
       res.status(StatusCodes.OK).json({ laptops });
     } else if (laptops < 0) {
@@ -111,68 +114,4 @@ const getAllLaptops = async (req, res) => {
   }
 };
 
-const addHistory = async (req, res) => {
-  const { computerName, user, author } = req.body;
-
-  const getComputer = await Laptop.findOne({ computerName });
-  if (!getComputer) {
-    res.status(StatusCodes.BAD_GATEWAY).json({ error: "something is wrong" });
-  }
-
-  try {
-    const history = await History.create({
-      laptop: getComputer._id,
-      user,
-      author,
-    });
-
-    const addHistoryIdToLaptop = await Laptop.findByIdAndUpdate(
-      { _id: getComputer.id },
-      { $push: { history: history._id } },
-      { new: true }
-    );
-
-    res.status(StatusCodes.CREATED).json({
-      history,
-      addHistoryIdToLaptop: {
-        history: addHistoryIdToLaptop.history,
-      },
-    });
-  } catch (error) {
-    console.log(error.message);
-  }
-};
-
-const deleteHistory = async (req, res) => {
-  try {
-    const historyId = req.params.id;
-
-    const laptopHistory = await Laptop.updateMany(
-      {},
-      {
-        $pull: { history: { $in: [historyId] } },
-      }
-    );
-    const getHistory = await History.findOneAndDelete({ historyId });
-    if (!getHistory) {
-      res.status(StatusCodes.BAD_REQUEST).json({ error: "no history found" });
-      return;
-    } else {
-      res.status(StatusCodes.OK).json({
-        message: "history deleted",
-        laptopHistory,
-      });
-    }
-  } catch (error) {
-    console.log(error.message);
-  }
-};
-
-export {
-  uploadLaptops,
-  addLaptop,
-  updateLaptop,
-  getAllLaptops,
-  addHistory,
-  deleteHistory,
-};
+export { uploadLaptops, addLaptop, updateLaptop, getAllLaptops };
