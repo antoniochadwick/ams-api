@@ -1,7 +1,6 @@
 import csv from "csv-parser";
 import fs from "fs";
 import Laptop from "../models/Laptop.js";
-import History from "../models/History.js";
 import StatusCodes from "http-status-codes";
 
 const uploadLaptops = async (req, res) => {
@@ -28,8 +27,11 @@ const uploadLaptops = async (req, res) => {
             computerName: results[i].computerName,
             make: results[i].make,
             model: results[i].model,
-            dateAdded: results[i].dateAdded,
-            assignedUser: results[i].assignedUser,
+            department: results[i].department,
+            serial_number: results[i].serial_number,
+            date_added: results[i].date_added,
+            assign_date: results[i].assign_date,
+            current_user: results[i].current_user,
             history: results[i].history,
             comments: results[i].comments,
           });
@@ -43,9 +45,17 @@ const uploadLaptops = async (req, res) => {
 
 const addLaptop = async (req, res) => {
   try {
-    const { computerName, make, model, assignedUser, history, comments } =
-      req.body;
-    if (!computerName || !make || !model) {
+    const {
+      computerName,
+      make,
+      model,
+      serial_number,
+      department,
+      current_user,
+      history,
+      comments,
+    } = req.body;
+    if (!computerName || !make || !model || !serial_number) {
       res.status(StatusCodes.BAD_REQUEST).json({
         message: "please provide Computer name, make and model",
       });
@@ -62,7 +72,9 @@ const addLaptop = async (req, res) => {
       computerName,
       make,
       model,
-      assignedUser,
+      serial_number,
+      department,
+      current_user,
       history,
       comments,
     });
@@ -80,12 +92,31 @@ const updateLaptop = async (req, res) => {
   try {
     const laptopID = req.params.id;
 
-    const { computerName, make, model, assignedUser, history, comments } =
-      req.body;
+    const {
+      computerName,
+      make,
+      model,
+      department,
+      assign_date,
+      serial_number,
+      current_user,
+      history,
+      comments,
+    } = req.body;
 
     const laptop = await Laptop.findByIdAndUpdate(
       { _id: laptopID },
-      { computerName, make, model, assignedUser, history, comments },
+      {
+        computerName,
+        make,
+        model,
+        department,
+        assign_date,
+        serial_number,
+        current_user,
+        history,
+        comments,
+      },
       { new: true }
     );
     if (!laptop) {
@@ -102,11 +133,11 @@ const getAllLaptops = async (req, res) => {
   try {
     const laptops = await Laptop.find().populate({
       path: "history",
-      populate: { path: "laptop", select: "computerName" },
+      populate: { path: "laptop", select: "serial_number" },
     });
     if (laptops.length > 0) {
       res.status(StatusCodes.OK).json({ laptops });
-    } else if (laptops < 0) {
+    } else {
       res.status(StatusCodes.BAD_REQUEST).json({ error: "no laptops found" });
     }
   } catch (error) {

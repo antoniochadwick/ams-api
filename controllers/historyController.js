@@ -52,7 +52,8 @@ const deleteHistory = async (req, res) => {
       return;
     } else {
       res.status(StatusCodes.OK).json({
-        message: "history deleted",
+        message: `history ${historyId} deleted`,
+
         laptopHistory,
       });
     }

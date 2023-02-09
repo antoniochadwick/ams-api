@@ -9,10 +9,12 @@ app.use(express.json());
 //routes imports
 import laptopRoutes from "./routes/laptopRoutes.js";
 import historyRoutes from "./routes/historyRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
 
 //routes
 app.use("/laptop", laptopRoutes);
 app.use("/history", historyRoutes);
+app.use("/users", userRoutes);
 
 app.use("/", (req, res) => {
   res.send("Hello from server side");

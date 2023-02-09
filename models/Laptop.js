@@ -13,9 +13,20 @@ const Laptop = new mongoose.Schema({
     type: String,
     required: true,
   },
+  serial_number: {
+    type: String,
+    required: true,
+  },
+  department: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
   date_added: {
     type: Date,
     default: Date.now,
+  },
+  assign_date: {
+    type: Date,
   },
   current_user: {
     type: mongoose.Schema.Types.ObjectId,
