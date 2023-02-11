@@ -23,7 +23,7 @@ const Laptop = new mongoose.Schema({
   },
   date_added: {
     type: Date,
-    default: Date.now,
+    required: true,
   },
   assign_date: {
     type: Date,
@@ -31,6 +31,7 @@ const Laptop = new mongoose.Schema({
   current_user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
+    required: true,
   },
   history: [
     {

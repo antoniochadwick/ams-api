@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+import Laptop from "../models/Laptop.js";
 import csv from "csv-parser";
 import fs from "fs";
 import { StatusCodes } from "http-status-codes";
@@ -91,6 +92,7 @@ const updateUser = async (req, res) => {
     user,
   });
 };
+
 const getAllUser = async (req, res) => {
   try {
     const getUsers = await User.find();
@@ -111,11 +113,27 @@ const getAllUser = async (req, res) => {
   }
 };
 const deleteUser = async (req, res) => {
-  res.send("delete User");
+  res.send("user deleted");
 };
 
 const assignUser = async (req, res) => {
-  res.send("user assigned");
+  const { userName, computerName } = req.body;
+  const user = await User.findOne({ userName });
+  const laptop = await Laptop.findOne({ computerName });
+
+  if (!user || !laptop) {
+    res.status(StatusCodes.BAD_REQUEST).json({
+      error: "no user/laptop found",
+    });
+  }
+  const computer = await Laptop.findOneAndUpdate(
+    { _id: laptop._id },
+    { current_user: user._id },
+    { new: true }
+  );
+  res.status(StatusCodes.OK).json({
+    computer,
+  });
 };
 
-export { uploadUsers, updateUser, addUser, getAllUser, deleteUser };
+export { uploadUsers, updateUser, addUser, getAllUser, deleteUser, assignUser };

@@ -29,7 +29,7 @@ const uploadLaptops = async (req, res) => {
             model: results[i].model,
             department: results[i].department,
             serial_number: results[i].serial_number,
-            date_added: results[i].date_added,
+            date_added: Date.now(),
             assign_date: results[i].assign_date,
             current_user: results[i].current_user,
             history: results[i].history,
@@ -131,17 +131,21 @@ const updateLaptop = async (req, res) => {
 
 const getAllLaptops = async (req, res) => {
   try {
-    const laptops = await Laptop.find().populate({
-      path: "history",
-      populate: { path: "laptop", select: "serial_number" },
-    });
+    const laptops = await Laptop.find()
+      .populate({
+        path: "history",
+        populate: { path: "laptop", select: "serial_number" },
+      })
+      .populate({ path: "current_user" });
     if (laptops.length > 0) {
       res.status(StatusCodes.OK).json({ laptops });
     } else {
       res.status(StatusCodes.BAD_REQUEST).json({ error: "no laptops found" });
     }
   } catch (error) {
-    res.send(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: error.message });
   }
 };
 
