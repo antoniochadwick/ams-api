@@ -18,8 +18,7 @@ const Laptop = new mongoose.Schema({
     required: true,
   },
   department: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    type: String,
   },
   date_added: {
     type: Date,
@@ -31,7 +30,6 @@ const Laptop = new mongoose.Schema({
   current_user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
-    required: true,
   },
   history: [
     {

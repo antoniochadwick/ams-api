@@ -117,23 +117,29 @@ const deleteUser = async (req, res) => {
 };
 
 const assignUser = async (req, res) => {
-  const { userName, computerName } = req.body;
-  const user = await User.findOne({ userName });
-  const laptop = await Laptop.findOne({ computerName });
+  try {
+    const { userName, computerName } = req.body;
+    const user = await User.findOne({ userName });
+    const laptop = await Laptop.findOne({ computerName });
 
-  if (!user || !laptop) {
-    res.status(StatusCodes.BAD_REQUEST).json({
-      error: "no user/laptop found",
+    if (!user || !laptop) {
+      res.status(StatusCodes.BAD_REQUEST).json({
+        error: "no user/laptop found",
+      });
+    }
+    const computer = await Laptop.findOneAndUpdate(
+      { _id: laptop._id },
+      { current_user: user._id },
+      { new: true }
+    );
+    res.status(StatusCodes.OK).json({
+      computer,
+    });
+  } catch (error) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      error: error.message,
     });
   }
-  const computer = await Laptop.findOneAndUpdate(
-    { _id: laptop._id },
-    { current_user: user._id },
-    { new: true }
-  );
-  res.status(StatusCodes.OK).json({
-    computer,
-  });
 };
 
 export { uploadUsers, updateUser, addUser, getAllUser, deleteUser, assignUser };

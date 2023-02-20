@@ -15,8 +15,10 @@ const uploadLaptops = async (req, res) => {
       error: "file size too large. Max 1MB allowed",
     });
   }
+
   fs.createReadStream(req.file.path)
     .pipe(csv())
+
     .on("data", (data) => {
       results.push(data);
     })
@@ -77,6 +79,7 @@ const addLaptop = async (req, res) => {
       current_user,
       history,
       comments,
+      date_added: Date.now(),
     });
     res.status(StatusCodes.CREATED).json({
       laptop,
@@ -134,7 +137,6 @@ const getAllLaptops = async (req, res) => {
     const laptops = await Laptop.find()
       .populate({
         path: "history",
-        populate: { path: "laptop", select: "serial_number" },
       })
       .populate({ path: "current_user" });
     if (laptops.length > 0) {
