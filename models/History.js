@@ -17,7 +17,7 @@ const History = new mongoose.Schema({
   },
   date_updated: {
     type: Date,
-    default: Date.now,
+    required: true,
   },
 });
 

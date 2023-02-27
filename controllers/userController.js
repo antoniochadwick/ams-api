@@ -95,7 +95,7 @@ const updateUser = async (req, res) => {
 
 const getAllUser = async (req, res) => {
   try {
-    const getUsers = await User.find();
+    const users = await User.find();
     if (getAllUser < 0) {
       res.status(StatusCodes.BAD_REQUEST).json({
         error: "no users found",
@@ -103,7 +103,7 @@ const getAllUser = async (req, res) => {
       return;
     } else {
       res.status(StatusCodes.OK).json({
-        getUsers,
+        users,
       });
     }
   } catch (error) {
