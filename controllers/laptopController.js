@@ -2,6 +2,8 @@ import csv from "csv-parser";
 import fs from "fs";
 import Laptop from "../models/Laptop.js";
 import StatusCodes from "http-status-codes";
+import History from "../models/History.js";
+import User from "../models/User.js";
 
 const uploadLaptops = async (req, res) => {
   const results = [];
@@ -107,6 +109,23 @@ const updateLaptop = async (req, res) => {
       comments,
     } = req.body;
 
+    const assigned_user = await User.findOne({ current_user });
+    // this checks if current_user value exist then creates a history of the laptop with the User name
+    if (current_user) {
+      const historyEntry = new History({
+        laptop: laptopID,
+        assigned_user: assigned_user._id,
+        author: "admin",
+        date_updated: Date.now(),
+      });
+      historyEntry.save();
+
+      const addHistory = await Laptop.updateOne(
+        { _id: laptopID },
+        { $set: { history: historyEntry._id } }
+      );
+    }
+
     const laptop = await Laptop.findByIdAndUpdate(
       { _id: laptopID },
       {
@@ -116,19 +135,22 @@ const updateLaptop = async (req, res) => {
         department,
         assign_date,
         serial_number,
-        current_user,
+        current_user: assigned_user._id,
         history,
         comments,
       },
       { new: true }
     );
+
     if (!laptop) {
       res.status(StatusCodes.BAD_REQUEST).json({ error: "Laptop not found" });
     } else {
       res.status(StatusCodes.OK).json({ laptop });
     }
   } catch (error) {
-    res.send(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: error.message });
   }
 };
 
